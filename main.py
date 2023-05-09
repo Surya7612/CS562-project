@@ -4,23 +4,23 @@ from databaseConfig import dbConfig
 from mfQueries import mf_Query
 #from emfQueries import emfQuery
 import subprocess
+import psycopg2
 
 # Create connection to database
-db = postgresql.open(
-    user = dbConfig["user"],
-    password = dbConfig["password"],
-    host = dbConfig["host"],
-    port = dbConfig["port"],
-    database = dbConfig["database"],
-)
-
-# Run sql file to initialize database with sales table defined in sdap.sql
-# initializeFile = open("sdap.sql")
-# for line in initializeFile:
-#     db.query(line)
+try:
+    db = postgresql.open(
+        user = dbConfig["user"],
+        password = dbConfig["password"],
+        host = dbConfig["host"],
+        port = dbConfig["port"],
+        database = dbConfig["database"],
+    )   
+except(Exception, psycopg2.Error) as error:
+	print("Error connecting to PostgreSQL database ==>", error)
+	exit()
 
 # Receive Input
-inputType = input("Please enter the name of the file which you would like to read, or enter nothing to input the variables inline: ")
+inputType = input("Please File Name which you would like to read : ")
 selectAttributes = ""
 groupingVarCount = ""
 groupingAttributes = ""
@@ -29,57 +29,54 @@ predicates = ""
 having_condition = ""
 
 if inputType != "":
-    with open(inputType) as f:
-        content = f.readlines()
-    content = [x.rstrip() for x in content]
-    i = 0
-    while i < len(content):
-        if(content[i] == "SELECT ATTRIBUTE(S):"):
-            i += 1
-            selectAttributes = content[i].replace(" ", "")
-            i += 1
-        elif(content[i] == "NUMBER OF GROUPING VARIABLES(n):"):
-            i += 1
-            groupingVarCount = content[i].replace(" ", "")
-            i += 1
-        elif(content[i] == "GROUPING ATTRIBUTES(V):"):
-            i += 1
-            groupingAttributes = content[i].replace(" ", "")
-            i += 1
-        elif(content[i] == "F-VECT([F]):"):
-            i += 1
-            fVect = content[i].replace(" ", "")
-            i += 1
-        elif(content[i] == "SELECT CONDITION-VECT([σ]):"):
-            i += 1
-            predicates = content[i]
-            i += 1
-        elif(content[i] == "HAVING_CONDITION(G):"): 
-            i += 1     
-            having_condition = content[i]
-            i += 1
-        else:
-            predicates += "," + content[i]
-            i += 1
-    #trim input of whitespace
-    selectAttributes = selectAttributes.replace(" ", "")
-    groupingVarCount = groupingVarCount.replace(" ", "")
-    groupingAttributes = groupingAttributes.replace(" ", "")
-    fVect = fVect.replace(" ", "")
-    predicates = predicates #white space needed to evaluate each predicate statment 
-    having_condition = having_condition #white space needed to evaluate each having condition
 
+    try:
+        with open(inputType) as f:
+            content = f.readlines()
+        content = [x.rstrip() for x in content]
+        i = 0
+        while i < len(content):
+            if(content[i] == "SELECT ATTRIBUTE(S):"):
+                i += 1
+                selectAttributes = content[i].replace(" ", "")
+                i += 1
+            elif(content[i] == "NUMBER OF GROUPING VARIABLES(n):"):
+                i += 1
+                groupingVarCount = content[i].replace(" ", "")
+                i += 1
+            elif(content[i] == "GROUPING ATTRIBUTES(V):"):
+                i += 1
+                groupingAttributes = content[i].replace(" ", "")
+                i += 1
+            elif(content[i] == "F-VECT([F]):"):
+                i += 1
+                fVect = content[i].replace(" ", "")
+                i += 1
+            elif(content[i] == "SELECT CONDITION-VECT([σ]):"):
+                i += 1
+                predicates = content[i]
+                i += 1
+            elif(content[i] == "HAVING_CONDITION(G):"): 
+                i += 1     
+                having_condition = content[i]
+                i += 1
+            else:
+                predicates += "," + content[i]
+                i += 1
+        #trim input of whitespace
+        selectAttributes = selectAttributes.replace(" ", "")
+        groupingVarCount = groupingVarCount.replace(" ", "")
+        groupingAttributes = groupingAttributes.replace(" ", "")
+        fVect = fVect.replace(" ", "")
+        predicates = predicates #white space needed to evaluate each predicate statment 
+        having_condition = having_condition #white space needed to evaluate each having condition
+   
+    except(Exception):
+        print("Error : Please Enter Valid File Name!")
+        exit()
 else:
-    #read inline
-    selectAttributes = input("Please input the select attributes seperated by a comma: ").replace(" ", "")
-    groupingVarCount = input("Please input the number of grouping variables: ").replace(" ", "")
-    groupingAttributes = input("Please input the grouping attribute(s). If more than one, seperate with commas: ").replace(" ", "")
-    fVect = input("Please input the list of aggregate functions for the query seperated by a comma: ").replace(" ", "")
-    predicates = input("Please input the predicates that define the range of the grouping variables seperated by a comma. Each predicate must have each element sperated by a space: ")
-    having_condition = input("Please input the having condition with each element seperated by spaces, and the AND and OR written in lowercase: ")
-
-# if len(having_condition)== 0 :
-#     having_condition = ''
+    print("Please Prove File Name!")
+    subprocess.run(["python3", "main.py"])
 
 #initalizing algorithmFile with needed modules, database connection, input variables, and empty MF Struct
 with open('output.py', 'w') as outputfile: # opens file to write algorithm to

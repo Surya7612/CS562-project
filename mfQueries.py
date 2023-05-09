@@ -128,39 +128,41 @@ for i in range(int(groupingVarCount)+1):
 output = PrettyTable()
 output.field_names = selectAttributes.split(',')
 for row in MF_Struct:
-    eval_string = ''
-    if havingCondition != '':
-        for string in havingCondition.split(' '):
-            if string not in ['>', '<', '==', '<=', '>=', 'and', 'or', 'not', '*', '/', '+', '-']:
-                try:
-                    int(string)
-                    eval_string += string
-                except:
-                    if len(string.split('_')) > 1 and string.split('.')[1] == 'avg':
-                        eval_string += str(MF_Struct[row][string]['avg'])
-                    else:
-                        eval_string += str(MF_Struct[row][string])
-            else:
-                eval_string += f'{string}'
-        
-        if eval(eval_string.replace('=', '==')):
-            row_info = []
-            for val in selectAttributes.split(','):
-                if len(val.split('_')) > 1 and val.split('_')[1] == 'avg':
-                    row_info += [str(MF_Struct[row][val]['avg'])]
-                else:
-                    row_info += [str(MF_Struct[row][val])]
-            output.add_row(row_info)
-        evalString = ''
-    else:
+	evalString = ''
+	if havingCondition != '':
+        #if there is a having condition, loop through each element of the having condition to fill in the correct information into the evalString
+        #the eval string will be equal to the having condition, replaced with the values of the variables in question,
+        # then evaluated to check if the row of the MFStruct being examined is to be included in the output table
+		for string in havingCondition.split(' '):
+			if string not in ['>', '<', '==', '<=', '>=', 'and', 'or', 'not', '*', '/', '+', '-']:
+				try:
+					int(string)
+					evalString += string
+				except:
+					if len(string.split('_')) > 1 and string.split('_')[1] == 'avg':
+						evalString += str(MF_Struct[row][string]['avg'])
+					else:
+						evalString += str(MF_Struct[row][string])
+			else:
+				evalString += f' {string} '
+		if eval(evalString.replace('=', '==')):
+			row_info = []
+			for val in selectAttributes.split(','):
+				if len(val.split('_')) > 1 and val.split('_')[1] == 'avg':
+					row_info += [str(MF_Struct[row][val]['avg'])]
+				else:
+					row_info += [str(MF_Struct[row][val])]
+			output.add_row(row_info)
+		evalString = ''
+	else:
         #there is no having condition, thus every MFStruct row will be in the output table
-        row_info = []
-        for val in selectAttributes.split(','):
-            if len(val.split('_')) > 1 and val.split('_')[1] == 'avg':
-                row_info += [str(MF_Struct[row][val]['avg'])]
-            else:
-                row_info += [str(MF_Struct[row][val])]
-        output.add_row(row_info)
+		row_info = []
+		for val in selectAttributes.split(','):
+			if len(val.split('_')) > 1 and val.split('_')[1] == 'avg':
+				row_info += [str(MF_Struct[row][val]['avg'])]
+			else:
+				row_info += [str(MF_Struct[row][val])]
+		output.add_row(row_info)
 print(output) #Pretty table corresponding to evaluation of query"""
 
 

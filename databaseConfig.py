@@ -2,6 +2,6 @@ dbConfig = {
     "user": "postgres",
     "password": "postgres",
     "host": "localhost",
-    "port": "3000",
+    "port": "5432",
     "database": "postgres"
 }
