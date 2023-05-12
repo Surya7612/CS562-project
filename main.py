@@ -1,7 +1,7 @@
 import postgresql
 from databaseConfig import dbConfig
 #from sqlQuery import sqlQuery
-from mfQueries import mf_Query
+from mfQueriess import mfQuery
 #from emfQueries import emfQuery
 import subprocess
 import psycopg2
@@ -16,8 +16,8 @@ try:
         database = dbConfig["database"],
     )   
 except(Exception, psycopg2.Error) as error:
-	print("Error connecting to PostgreSQL database ==>", error)
-	exit()
+    print("Error connecting to PostgreSQL database ==>", error)
+    exit()
 
 # Receive Input
 inputType = input("Please File Name which you would like to read : ")
@@ -108,6 +108,6 @@ with open('output.py', 'w') as outputfile: # opens file to write algorithm to
     # if(mf): # If query isn't a basic SQL query or an EMF query, evaluate as an MF Query
     outputfile.write("\n\n# Output file of Algorithm for MF Query:\n")
     outputfile.close()
-    mf_Query() #calls mfQuery function to write the appropriate algorithm to the algorithm.py file
+    mfQuery() #calls mfQuery function to write the appropriate algorithm to the algorithm.py file
 db.close()
 subprocess.run(["python3", "output.py"])

@@ -1,5 +1,5 @@
 SELECT ATTRIBUTE(S):
-prod, month, (1_sum_quant / 2_sum_quant) AS Result
+prod, month, (1_sum_quant / 2_sum_quant)
 NUMBER OF GROUPING VARIABLES(n):
 2
 GROUPING ATTRIBUTES(V):
@@ -7,7 +7,7 @@ prod, month
 F-VECT([F]):
 1_sum_quant, 2_sum_quant
 SELECT CONDITION-VECT([σ]):
-1.prod = 2.prod and 1.month = 2.month
+1.prod = prod and 1.month = month
 
 
 

@@ -1,21 +1,4 @@
-import postgresql
-from databaseConfig import dbConfig
-from prettytable import PrettyTable
-
-selectAttributes = "prod,year,1_sum_quant,2_avg_quant"
-groupingVarCount = 2
-groupingAttributes = "prod,year"
-fVect = "1_sum_quant,2_avg_quant"
-predicates = "1.prod = prod and 1.year = year,2.prod = prod"
-havingCondition = "1_sum_quant > 0.25 * 2_avg_quant"
-MF_Struct = {}
-db = postgresql.open(user = dbConfig['user'],password = dbConfig['password'],host = dbConfig['host'],port = dbConfig['port'],database = dbConfig['database'],)
-
-query = db.prepare('SELECT * FROM sales;')
-
-
-# Output file of Algorithm for MF Query:
-predicates = predicates.split(',') #splits predicates by each predicate statment and creates list to store the parts of each predicate in a single 2D array
+function = """predicates = predicates.split(',') #splits predicates by each predicate statment and creates list to store the parts of each predicate in a single 2D array
 pred_list = []
 for i in predicates:
 	pred_list.append(i.split(' '))
@@ -211,4 +194,8 @@ for row in MF_Struct:
 				row_info += [str(MF_Struct[row][val])]
 		output.add_row(row_info)
         
-print(output)
+print(output)"""
+def mfQuery():
+    with open('output.py', 'a') as outputfile:
+        outputfile.write(function)
+        outputfile.close()
