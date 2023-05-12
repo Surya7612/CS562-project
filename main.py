@@ -1,7 +1,7 @@
 import postgresql
 from databaseConfig import dbConfig
 #from sqlQuery import sqlQuery
-from mfQueriess import mfQuery
+from mfQueries import mf_Query
 #from emfQueries import emfQuery
 import subprocess
 import psycopg2
@@ -108,6 +108,6 @@ with open('output.py', 'w') as outputfile: # opens file to write algorithm to
     # if(mf): # If query isn't a basic SQL query or an EMF query, evaluate as an MF Query
     outputfile.write("\n\n# Output file of Algorithm for MF Query:\n")
     outputfile.close()
-    mfQuery() #calls mfQuery function to write the appropriate algorithm to the algorithm.py file
+    mf_Query() #calls mfQuery function to write the appropriate algorithm to the algorithm.py file
 db.close()
 subprocess.run(["python3", "output.py"])
