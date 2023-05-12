@@ -15,6 +15,7 @@ query = db.prepare('SELECT * FROM sales;')
 
 
 # Output file of Algorithm for MF Query:
+
 predicates = predicates.split(',') #splits predicates by each predicate statment and creates list to store the parts of each predicate in a single 2D array
 pred_list = []
 for i in predicates:
@@ -169,46 +170,91 @@ for i in range(int(groupingVarCount)+1):
 							if eval(eval_string.replace('=', '==')):
 								MF_Struct[key][aggregate] += 1
 #Generate output table(also checks the HAVING condition)
+# output = PrettyTable()
+# output.field_names = selectAttributes.split(',')
+# for row in MF_Struct:
+#     #create an eval_string to be used to check each having condition
+# 	eval_string = ''
+# 	if havingCondition != '':
+# 		for string in havingCondition.split(' '):
+#             #if there is a having condition, loop through each element of the having condition to fill in the correct information into the eval_string
+#             #the eval string will be equal to the having condition, replaced with the values of the variables in question, 
+#             #then evaluated to check if the row of the MFStruct being examined is to be included in the output table
+# 			if string not in ['>', '<', '==', '<=', '>=', 'and', 'or', 'not', '*', '/', '+', '-']:
+# 				try:
+# 					float(string)
+# 					eval_string += string
+# 				except:
+# 					if len(string.split('_')) > 1 and string.split('_')[1] == 'avg':
+# 					    eval_string += str(MF_Struct[row][string]['avg'])
+# 					else:
+# 						eval_string += str(MF_Struct[row][string])
+# 			else:
+#                 eval_string += f'{string}'
+        
+#         if eval(eval_string.replace('=', '==')):
+#             row_info = []
+# 			for val in selectAttributes.split(','):
+# 				if len(val.split('_')) > 1 and val.split('_')[1] == 'avg':
+# 					row_info += [str(MF_Struct[row][val]['avg'])]
+# 				else:
+# 					row_info += [str(MF_Struct[row][val])]
+# 			output.add_row(row_info)
+# 		eval_string = ''
+	
+#     else:
+#         #there is no having condition, thus every MFStruct row will be added to the output table
+# 		row_info = []
+# 		for val in selectAttributes.split(','):
+# 			if len(val.split('_')) > 1 and val.split('_')[1] == 'avg':
+# 				row_info += [str(MF_Struct[row][val]['avg'])]
+# 			else:
+# 				row_info += [str(MF_Struct[row][val])]
+# 		output.add_row(row_info)
+        
+# print(output)
+# Generate output table (also checks the HAVING condition)
 output = PrettyTable()
 output.field_names = selectAttributes.split(',')
+
 for row in MF_Struct:
-    #create an eval_string to be used to check each having condition
-	eval_string = ''
-	if havingCondition != '':
-		for string in havingCondition.split(' '):
-            #if there is a having condition, loop through each element of the having condition to fill in the correct information into the eval_string
-            #the eval string will be equal to the having condition, replaced with the values of the variables in question, 
-            #then evaluated to check if the row of the MFStruct being examined is to be included in the output table
-			if string not in ['>', '<', '==', '<=', '>=', 'and', 'or', 'not', '*', '/', '+', '-']:
-				try:
-					float(string)
-					eval_string += string
-				except:
-					if len(string.split('_')) > 1 and string.split('_')[1] == 'avg':
-					    eval_string += str(MF_Struct[row][string]['avg'])
-					else:
-						eval_string += str(MF_Struct[row][string])
-			else:
+    # Create an eval_string to be used to check each having condition
+    eval_string = ''
+    
+    if havingCondition != '':
+        # If there is a having condition, loop through each element of the having condition to fill in the correct information into the eval_string
+        # The eval string will be equal to the having condition, replaced with the values of the variables in question, 
+        # then evaluated to check if the row of the MFStruct being examined is to be included in the output table
+        for string in havingCondition.split(' '):
+            if string not in ['>', '<', '==', '<=', '>=', 'and', 'or', 'not', '*', '/', '+', '-']:
+                try:
+                    float(string)
+                    eval_string += string
+                except:
+                    if len(string.split('_')) > 1 and string.split('_')[1] == 'avg':
+                        eval_string += str(MF_Struct[row][string]['avg'])
+                    else:
+                        eval_string += str(MF_Struct[row][string])
+            else:
                 eval_string += f'{string}'
-        
+
         if eval(eval_string.replace('=', '==')):
             row_info = []
-			for val in selectAttributes.split(','):
-				if len(val.split('_')) > 1 and val.split('_')[1] == 'avg':
-					row_info += [str(MF_Struct[row][val]['avg'])]
-				else:
-					row_info += [str(MF_Struct[row][val])]
-			output.add_row(row_info)
-		eval_string = ''
-	
+            for val in selectAttributes.split(','):
+                if len(val.split('_')) > 1 and val.split('_')[1] == 'avg':
+                    row_info.append(str(MF_Struct[row][val]['avg']))
+                else:
+                    row_info.append(str(MF_Struct[row][val]))
+            output.add_row(row_info)
+        eval_string = ''
+
     else:
-        #there is no having condition, thus every MFStruct row will be added to the output table
-		row_info = []
-		for val in selectAttributes.split(','):
-			if len(val.split('_')) > 1 and val.split('_')[1] == 'avg':
-				row_info += [str(MF_Struct[row][val]['avg'])]
-			else:
-				row_info += [str(MF_Struct[row][val])]
-		output.add_row(row_info)
-        
+        # There is no having condition, thus every MFStruct row will be added to the output table
+        row_info = []
+        for val in selectAttributes.split(','):
+            if len(val.split('_')) > 1 and val.split('_')[1] == 'avg':
+                row_info.append(str(MF_Struct[row][val]['avg']))
+            else:
+                row_info.append(str(MF_Struct[row][val]))
+        output.add_row(row_info)
 print(output)
