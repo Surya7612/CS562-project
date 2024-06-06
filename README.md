@@ -19,7 +19,7 @@ MQC is a powerful tool designed to optimize Ad-Hoc OLAP (Online Analytical Proce
 ### Installation
 Clone the repository to your local machine:
 ```bash
-git clone https://github.com/itsshuchimehta/CS562-project.git
+https://github.com/Surya7612/CS562-project.git
 ```
 ### Setup
 1. Ensure Python 3.8 and PostgreSQL 15 are installed on your system.
